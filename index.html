@@ -191,6 +191,14 @@
     }
     .ok{display:block; background:#ebfff4; border:1px solid #b9efd0; color:#0b7a47;}
     .bad{display:block; background:#fff1f1; border:1px solid #f0c2c2; color:#af2c2c;}
+
+    .almost{
+      display:block;
+      background:#fff8e8;
+      border:1px solid #f6d48a;
+      color:#8a5a00;
+    }
+
     .answer-panel{
       margin-top:18px;
       background:#fff;
@@ -233,6 +241,67 @@
       text-align:center;
     }
     .pattern-table th{background:var(--soft)}
+
+    .celebration{
+      position:fixed;
+      inset:0;
+      background:rgba(8, 22, 48, .48);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:99;
+    }
+    .celebration.show{display:flex}
+    .monster-card{
+      width:min(520px, 92vw);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:0 22px 60px rgba(0,0,0,.25);
+      padding:22px;
+      text-align:center;
+      animation:popIn .35s ease-out;
+    }
+    .monster-card h2{
+      margin:8px 0 6px;
+      font-size:1.8rem;
+    }
+    .monster-card p{
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.45;
+    }
+    .monster-pic{
+      width:min(360px, 86vw);
+      max-height:360px;
+      object-fit:contain;
+      margin:0 auto 8px;
+      display:block;
+      border-radius:20px;
+    }
+    .monster-card button{
+      margin-top:10px;
+    }
+    .confetti-piece{
+      position:fixed;
+      top:-20px;
+      width:10px;
+      height:16px;
+      border-radius:3px;
+      z-index:120;
+      pointer-events:none;
+      animation:confettiFall linear forwards;
+    }
+    @keyframes confettiFall{
+      0%{transform:translateY(-30px) rotate(0deg); opacity:1}
+      100%{transform:translateY(105vh) rotate(720deg); opacity:.9}
+    }
+    @keyframes popIn{
+      from{transform:scale(.82); opacity:0}
+      to{transform:scale(1); opacity:1}
+    }
+
     @media (max-width:700px){
       .toolbar{position:static}
       .qhead{flex-direction:column; align-items:flex-start}
@@ -246,7 +315,7 @@
     <div class="hero">
       <h1>P3_Term_2_Revision</h1>
       <p class="subtitle">
-        This practice paper uses Term 2 concepts with fresh variants. Click <strong>Start / New Variant Paper</strong> to begin the 50-minute timer.
+        This practice paper uses Term 2 concepts with fresh variants. Click <strong>Start / New Variant Paper</strong> to begin the 50-minute timer.<br><strong>Try again and again! When you get all answers correct, you will unlock a cute surprise monster!</strong>
       </p>
     </div>
 
@@ -283,8 +352,18 @@
     <div class="footer">Designed by Lim Kim Sze © 2026</div>
   </div>
 
+
+  <div class="celebration" id="celebration">
+    <div class="monster-card">
+      <img class="monster-pic" src="https://raw.githubusercontent.com/limkimsze-maker/P3_Term_2_Revision/0ca0e3b8c297e5a7da14b9bd1ee02f33634c3ef5/ChatGPT%20Image%20May%201%2C%202026%2C%2011_39_19%20AM.png" alt="Surprise monster picture">
+      <h2>Excellent! Full Marks!</h2>
+      <p>You unlocked the surprise revision monster. Great effort!</p>
+      <button class="primary" onclick="closeCelebration()">Continue</button>
+    </div>
+  </div>
+
+
   <audio id="timeUpSound" preload="auto" src="tada.mp3"></audio>
-  <audio id="correctSound" preload="auto" src="correct.mp3"></audio>
   <audio id="wrongSound" preload="auto" src="wrong.mp3"></audio>
 
   <script>
@@ -619,6 +698,33 @@
         : `Not yet. Correct answer: ${q.answerText}`;
     }
 
+
+    function launchConfetti(){
+      const colours = ["#2f7df6","#17a668","#d14f4f","#f6b73c","#9b5cff","#ff7aa2"];
+      for(let i=0;i<110;i++){
+        const piece = document.createElement("div");
+        piece.className = "confetti-piece";
+        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.background = colours[Math.floor(Math.random() * colours.length)];
+        piece.style.animationDuration = (2.4 + Math.random() * 2.3) + "s";
+        piece.style.animationDelay = (Math.random() * .45) + "s";
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 5600);
+      }
+    }
+
+    function showCelebration(){
+      playSound("timeUpSound");
+      launchConfetti();
+      document.getElementById("celebration").classList.add("show");
+    }
+
+    function closeCelebration(){
+      document.getElementById("celebration").classList.remove("show");
+    }
+
+
     function checkAnswers(){
       let score = 0;
       state.questions.forEach(q => {
@@ -626,8 +732,19 @@
         if(result.correct) score += q.marks;
         showFeedback(q, result.correct);
       });
-      document.getElementById("scoreBox").textContent = `Score: ${score} / 20`;
-      playSound(score === 20 ? "timeUpSound" : "wrongSound");
+
+      const scoreBox = document.getElementById("scoreBox");
+      scoreBox.textContent = `Score: ${score} / 20`;
+
+      if(score === 20){
+        showCelebration();
+      } else if(score >= 18){
+        scoreBox.innerHTML = `Score: ${score} / 20<br><span style="color:#8a5a00;">Almost there! Try again and again. Check carefully and aim for full marks to unlock the cute surprise monster.</span>`;
+        playSound("wrongSound");
+      } else {
+        scoreBox.innerHTML = `Score: ${score} / 20<br><span style="color:#af2c2c;">Keep trying! You can try again and again until you improve.</span>`;
+        playSound("wrongSound");
+      }
     }
 
     function showAnswers(){
