@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>P3_Term_2_Revision</title>
+  <style>
+    :root{
+      --bg:#f4f8ff;
+      --card:#ffffff;
+      --ink:#16324f;
+      --muted:#5d7087;
+      --line:#d6e3f2;
+      --blue:#2f7df6;
+      --green:#17a668;
+      --red:#d14f4f;
+      --gold:#f6b73c;
+      --soft:#eef5ff;
+      --shadow:0 12px 28px rgba(22,50,79,.10);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at top left, #ffffff 0%, #f7fbff 30%, #eef5ff 100%);
+    }
+    .wrap{
+      max-width:1100px;
+      margin:0 auto;
+      padding:20px 16px 36px;
+    }
+    .hero{
+      background:linear-gradient(135deg, #eaf3ff 0%, #ffffff 65%);
+      border:1px solid var(--line);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      padding:20px;
+      margin-bottom:18px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:clamp(1.6rem, 2.8vw, 2.4rem);
+    }
+    .subtitle{
+      color:var(--muted);
+      margin:0;
+      line-height:1.5;
+    }
+    .toolbar{
+      position:sticky;
+      top:0;
+      z-index:10;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      background:rgba(244,248,255,.92);
+      backdrop-filter: blur(8px);
+      padding:12px 0 14px;
+    }
+    .btns{display:flex; flex-wrap:wrap; gap:10px}
+    button{
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      font-size:1rem;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:var(--shadow);
+    }
+    .primary{background:var(--blue); color:#fff}
+    .secondary{background:#fff; color:var(--ink); border:1px solid var(--line)}
+    .accent{background:var(--gold); color:#3d2a00}
+    .scorebox,.timerbox{
+      min-width:180px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:12px 16px;
+      box-shadow:var(--shadow);
+      font-weight:700;
+    }
+    .statusrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:stretch;
+    }
+    .timerbox.warning{background:#fff8e8;border-color:#f6b73c}
+    .timerbox.timeup{background:#fff1f1;border-color:#f0c2c2;color:#af2c2c}
+    .section{
+      margin-top:16px;
+      margin-bottom:8px;
+      font-size:1.3rem;
+      font-weight:800;
+    }
+    .section-note{
+      color:var(--muted);
+      margin-bottom:14px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+      gap:14px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+    }
+    .wide-card{
+      grid-column:1 / -1;
+    }
+    .qhead{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:10px;
+    }
+    .qnum{
+      font-weight:800;
+      font-size:1.04rem;
+    }
+    .mark{
+      background:var(--soft);
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:.92rem;
+      white-space:nowrap;
+    }
+    .qtext{
+      line-height:1.6;
+      margin-bottom:12px;
+      font-size:1.18rem;
+    }
+    .options{
+      display:grid;
+      gap:10px;
+    }
+    label.option{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fbfdff;
+      cursor:pointer;
+    }
+    input[type="text"]{
+      width:100%;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      font-size:1rem;
+      color:var(--ink);
+      background:#fff;
+    }
+    textarea{
+      width:100%;
+      min-height:76px;
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px dashed var(--line);
+      font-size:1rem;
+      color:var(--ink);
+      background:#fbfdff;
+      resize:vertical;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+    .hint{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-top:8px;
+    }
+    .feedback{
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:700;
+      display:none;
+    }
+    .ok{display:block; background:#ebfff4; border:1px solid #b9efd0; color:#0b7a47;}
+    .bad{display:block; background:#fff1f1; border:1px solid #f0c2c2; color:#af2c2c;}
+    .answer-panel{
+      margin-top:18px;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:18px;
+      display:none;
+    }
+    .answer-panel h3{
+      margin:0 0 10px;
+    }
+    .answer-list{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+      gap:10px;
+      color:var(--ink);
+    }
+    .answer-item{
+      background:#f8fbff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      line-height:1.45;
+    }
+    .footer{
+      margin-top:22px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+    .pattern-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:10px;
+    }
+    .pattern-table th,.pattern-table td{
+      border:1px solid var(--line);
+      padding:8px;
+      text-align:center;
+    }
+    .pattern-table th{background:var(--soft)}
+    @media (max-width:700px){
+      .toolbar{position:static}
+      .qhead{flex-direction:column; align-items:flex-start}
+      .scorebox,.timerbox{width:100%}
+      .statusrow{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>P3_Term_2_Revision</h1>
+      <p class="subtitle">
+        This practice paper uses Term 2 concepts with fresh variants. Click <strong>Start / New Variant Paper</strong> to begin the 50-minute timer.
+      </p>
+    </div>
+
+    <div class="toolbar">
+      <div class="btns">
+        <button class="primary" id="startBtn">Start / New Variant Paper</button>
+        <button class="secondary" id="checkBtn">Check Answers</button>
+        <button class="secondary" id="showBtn">Show Answers</button>
+        <button class="accent" id="clearBtn">Clear Answers</button>
+      </div>
+      <div class="statusrow">
+        <div class="timerbox" id="timerBox">Time: <span id="timerText">50:00</span></div>
+        <div class="scorebox" id="scoreBox">Score: 0 / 20</div>
+      </div>
+    </div>
+
+    <div class="section">Section A</div>
+    <div class="section-note">Questions 1 and 2 carry 1 mark each. Question 3 carries 2 marks. Total: 4 marks.</div>
+    <div class="grid" id="sectionA"></div>
+
+    <div class="section">Section B</div>
+    <div class="section-note">Questions 4 and 5 carry 1 mark each. Questions 6 to 8 carry 2 marks each. Total: 8 marks.</div>
+    <div class="grid" id="sectionB"></div>
+
+    <div class="section">Section C</div>
+    <div class="section-note">Show your working clearly. Total: 8 marks.</div>
+    <div class="grid" id="sectionC"></div>
+
+    <div class="answer-panel" id="answerPanel">
+      <h3>Answer Key</h3>
+      <div class="answer-list" id="answerList"></div>
+    </div>
+
+    <div class="footer">Designed by Lim Kim Sze © 2026</div>
+  </div>
+
+  <audio id="timeUpSound" preload="auto" src="tada.mp3"></audio>
+  <audio id="correctSound" preload="auto" src="correct.mp3"></audio>
+  <audio id="wrongSound" preload="auto" src="wrong.mp3"></audio>
+
+  <script>
+    const state = { questions: [] };
+    let timerInterval = null;
+    let timeLeft = 50 * 60;
+
+    const names = ["Ali","Ben","Chloe","Devi","Ethan","Fiona","Gopal","Hana","Ivan","Jia En","Kumar","Lina","Muthu","Nora","Omar","Priya","Ryan","Siti"];
+    const items = ["stickers","marbles","cards","pencils","erasers","cookies","beads","clips","toy cars","shells","badges","staplers"];
+
+    function randInt(min, max){ return Math.floor(Math.random() * (max - min + 1)) + min; }
+    function pick(arr){ return arr[randInt(0, arr.length - 1)]; }
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i = a.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+    function money(cents){ return "$" + (Number(cents) / 100).toFixed(2); }
+    function normalizeText(s){ return String(s).trim().toLowerCase().replace(/\s+/g, " "); }
+    function normalizeNumeric(s){ return String(s).trim().replace(/\$/g,"").replace(/,/g,"").replace(/\s+/g,""); }
+
+    function playSound(id){
+      const audio = document.getElementById(id);
+      if(!audio) return;
+      audio.currentTime = 0;
+      audio.play().catch(()=>{});
+    }
+
+    function formatTime(seconds){
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      return String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+    }
+
+    function resetTimer(){
+      clearInterval(timerInterval);
+      timeLeft = 50 * 60;
+      document.getElementById("timerText").textContent = "50:00";
+      document.getElementById("timerBox").className = "timerbox";
+    }
+
+    function startTimer(){
+      resetTimer();
+      document.getElementById("timerBox").className = "timerbox";
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timerText").textContent = formatTime(Math.max(timeLeft,0));
+        if(timeLeft <= 5 * 60 && timeLeft > 0){
+          document.getElementById("timerBox").className = "timerbox warning";
+        }
+        if(timeLeft <= 0){
+          clearInterval(timerInterval);
+          document.getElementById("timerText").textContent = "Time's up!";
+          document.getElementById("timerBox").className = "timerbox timeup";
+          playSound("timeUpSound");
+        }
+      }, 1000);
+    }
+
+    function createMCQ(q){
+      return `
+        <div class="card" id="card-${q.id}">
+          <div class="qhead">
+            <div class="qnum">${q.label}</div>
+            <div class="mark">${q.marks} mark${q.marks>1?'s':''}</div>
+          </div>
+          <div class="qtext">${q.text}</div>
+          <div class="options">
+            ${q.options.map((opt, idx) => `
+              <label class="option">
+                <input type="radio" name="${q.id}" value="${idx}">
+                <span>${opt}</span>
+              </label>
+            `).join("")}
+          </div>
+          <div class="feedback" id="fb-${q.id}"></div>
+        </div>
+      `;
+    }
+
+    function createInput(q){
+      return `
+        <div class="card ${q.wide ? 'wide-card' : ''}" id="card-${q.id}">
+          <div class="qhead">
+            <div class="qnum">${q.label}</div>
+            <div class="mark">${q.marks} mark${q.marks>1?'s':''}</div>
+          </div>
+          <div class="qtext">${q.text}</div>
+          <input type="text" id="${q.id}" placeholder="${q.placeholder || 'Type your answer here'}">
+          ${q.working ? `<textarea placeholder="Show your working here..."></textarea>` : ""}
+          ${q.hint ? `<div class="hint">${q.hint}</div>` : ""}
+          <div class="feedback" id="fb-${q.id}"></div>
+        </div>
+      `;
+    }
+
+    function buildPaper(){
+      const qs = [];
+
+      // Q1 repeated addition, exactly one mathematically correct option
+      {
+        const a = randInt(6, 9);
+        const b = randInt(4, 9);
+        const correct = Array(b).fill(a).join(" + ");
+        const wrong1 = Array(Math.max(2, b - 1)).fill(a).join(" + ");
+        const wrong2 = Array(b + 1).fill(a).join(" + ");
+        const wrong3 = `${a} + ${b} + ${a} + ${b}`;
+        const options = shuffle([correct, wrong1, wrong2, wrong3]);
+        qs.push({
+          id:"q1", type:"mcq", label:"1.",
+          text:`Which expression shows <strong>${a} × ${b}</strong>?`,
+          options,
+          correctIndex: options.indexOf(correct),
+          answerText: correct,
+          marks:1
+        });
+      }
+
+      // Q2 product
+      {
+        const a = randInt(6,9), b = randInt(6,9);
+        const ans = a*b;
+        const options = shuffle([ans, a+b, Number(String(a)+String(b)), ans+randInt(2,8)].map(String));
+        qs.push({
+          id:"q2", type:"mcq", label:"2.",
+          text:`Find the product of <strong>${a}</strong> and <strong>${b}</strong>.`,
+          options,
+          correctIndex: options.indexOf(String(ans)),
+          answerText:String(ans),
+          marks:1
+        });
+      }
+
+      // Q3 missing dividend
+      {
+        const divisor = randInt(4,9);
+        const quotient = randInt(12,35);
+        const remainder = randInt(1,divisor-1);
+        const ans = divisor*quotient + remainder;
+        const options = shuffle([ans, divisor+quotient+remainder, divisor*quotient, ans+divisor].map(String));
+        qs.push({
+          id:"q3", type:"mcq", label:"3.",
+          text:`⬜ ÷ ${divisor} = ${quotient} R ${remainder}<br>What is the missing number?`,
+          options,
+          correctIndex: options.indexOf(String(ans)),
+          answerText:String(ans),
+          marks:2
+        });
+      }
+
+      // Q4 multiply
+      {
+        const n = randInt(21,98), m = randInt(3,8);
+        qs.push({
+          id:"q4", type:"input", label:"4.",
+          text:`${n} × ${m} = ______`,
+          correct:String(n*m),
+          answerText:String(n*m),
+          marks:1
+        });
+      }
+
+      // Q5 division
+      {
+        const d = randInt(3,9), q = randInt(8,20);
+        const dividend = d*q;
+        qs.push({
+          id:"q5", type:"input", label:"5.",
+          text:`${dividend} ÷ ${d} = ______`,
+          correct:String(q),
+          answerText:String(q),
+          marks:1
+        });
+      }
+
+      // Q6 equal groups
+      {
+        const per = randInt(5,12), groups = randInt(3,9);
+        const item = pick(items), name = pick(names);
+        qs.push({
+          id:"q6", type:"input", label:"6.",
+          text:`${name} put <strong>${per}</strong> ${item} into each packet.<br>${name} had <strong>${groups}</strong> packets.<br>How many ${item} were there altogether?`,
+          correct:String(per*groups),
+          answerText:String(per*groups),
+          marks:2,
+          wide:true
+        });
+      }
+
+      // Q7 remainder
+      {
+        const d = randInt(4,9), q = randInt(30,80), r = randInt(1,d-1);
+        const dividend = d*q + r;
+        qs.push({
+          id:"q7", type:"input", label:"7.",
+          text:`Find the remainder when <strong>${dividend}</strong> is divided by <strong>${d}</strong>.`,
+          correct:String(r),
+          answerText:String(r),
+          marks:2
+        });
+      }
+
+      // Q8 times as many
+      {
+        const base = randInt(40,180), times = randInt(3,8);
+        const n1 = pick(names), n2 = pick(names.filter(x=>x!==n1));
+        const item = pick(items);
+        qs.push({
+          id:"q8", type:"input", label:"8.",
+          text:`${n1} bought <strong>${base}</strong> ${item}.<br>${n2} bought <strong>${times}</strong> times as many ${item} as ${n1}.<br>How many ${item} did ${n2} buy?`,
+          correct:String(base*times),
+          answerText:String(base*times),
+          marks:2,
+          wide:true
+        });
+      }
+
+      // Q9 twice as many
+      {
+        const half = randInt(30,120);
+        const total = half*2;
+        const n1 = pick(names), n2 = pick(names.filter(x=>x!==n1));
+        const item = pick(items);
+        qs.push({
+          id:"q9", type:"input", label:"9.",
+          text:`${n1} has <strong>${total}</strong> ${item}. ${n1} has twice as many ${item} as ${n2}.<br>How many ${item} does ${n2} have?`,
+          correct:String(half),
+          answerText:String(half),
+          marks:2,
+          working:true,
+          wide:true
+        });
+      }
+
+      // Q10 money start unknown
+      {
+        let start = randInt(900,3500);
+        const given = randInt(500,2000);
+        const spent = randInt(400,1800);
+        let left = start + given - spent;
+        if(left < 100){ left = randInt(500,2500); start = left + spent - given; }
+        const child = pick(names);
+        qs.push({
+          id:"q10", type:"input", label:"10.",
+          text:`${child} had some money at first.<br>His mother gave him <strong>${money(given)}</strong>.<br>Then, he spent <strong>${money(spent)}</strong> and had <strong>${money(left)}</strong> left.<br>How much money did ${child} have at first?`,
+          correct:(start/100).toFixed(2),
+          answerText:money(start),
+          marks:3,
+          placeholder:"e.g. 12.50",
+          hint:"You may type the answer with or without the dollar sign.",
+          working:true,
+          wide:true
+        });
+      }
+
+      // Q11a and 11b pattern
+      {
+        const add = randInt(1,5);
+        const table = `
+          <table class="pattern-table">
+            <tr><th>Figure</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+            <tr><th>Number of beads</th><td>${1+add}</td><td>${4+add}</td><td>${9+add}</td><td>${16+add}</td><td>?</td></tr>
+          </table>
+        `;
+        qs.push({
+          id:"q11a", type:"input", label:"11(a).",
+          text:`Study the pattern below carefully.${table}Fill in the table for Figure 5.`,
+          correct:String(25+add),
+          answerText:String(25+add),
+          marks:1,
+          wide:true
+        });
+        qs.push({
+          id:"q11b", type:"input", label:"11(b).",
+          text:`How many beads will there be in <strong>Figure 10</strong>?`,
+          correct:String(100+add),
+          answerText:String(100+add),
+          marks:2,
+          working:true,
+          wide:true
+        });
+      }
+
+      state.questions = qs;
+      renderPaper();
+      document.getElementById("scoreBox").textContent = "Score: 0 / 20";
+      document.getElementById("answerPanel").style.display = "none";
+      document.getElementById("answerList").innerHTML = "";
+    }
+
+    function renderPaper(){
+      const secA = document.getElementById("sectionA");
+      const secB = document.getElementById("sectionB");
+      const secC = document.getElementById("sectionC");
+      secA.innerHTML = "";
+      secB.innerHTML = "";
+      secC.innerHTML = "";
+
+      state.questions.forEach(q => {
+        const html = q.type === "mcq" ? createMCQ(q) : createInput(q);
+        if(["q1","q2","q3"].includes(q.id)) secA.insertAdjacentHTML("beforeend", html);
+        else if(["q4","q5","q6","q7","q8"].includes(q.id)) secB.insertAdjacentHTML("beforeend", html);
+        else secC.insertAdjacentHTML("beforeend", html);
+      });
+    }
+
+    function evaluate(q){
+      if(q.type === "mcq"){
+        const chosen = document.querySelector(`input[name="${q.id}"]:checked`);
+        const correct = chosen && Number(chosen.value) === q.correctIndex;
+        return { correct, given: chosen ? q.options[Number(chosen.value)] : "" };
+      }
+
+      const raw = document.getElementById(q.id).value;
+      if(["q10"].includes(q.id)){
+        const ans = normalizeNumeric(raw);
+        return { correct: Number(ans).toFixed(2) === q.correct, given: raw };
+      }
+
+      const ans = normalizeNumeric(raw);
+      return { correct: ans === q.correct, given: raw };
+    }
+
+    function showFeedback(q, isCorrect){
+      const fb = document.getElementById(`fb-${q.id}`);
+      fb.className = "feedback " + (isCorrect ? "ok" : "bad");
+      fb.textContent = isCorrect
+        ? `Correct! (+${q.marks})`
+        : `Not yet. Correct answer: ${q.answerText}`;
+    }
+
+    function checkAnswers(){
+      let score = 0;
+      state.questions.forEach(q => {
+        const result = evaluate(q);
+        if(result.correct) score += q.marks;
+        showFeedback(q, result.correct);
+      });
+      document.getElementById("scoreBox").textContent = `Score: ${score} / 20`;
+      playSound(score === 20 ? "timeUpSound" : "wrongSound");
+    }
+
+    function showAnswers(){
+      const panel = document.getElementById("answerPanel");
+      const list = document.getElementById("answerList");
+      list.innerHTML = state.questions.map(q => `
+        <div class="answer-item"><strong>${q.label}</strong> ${q.answerText}</div>
+      `).join("");
+      panel.style.display = "block";
+      panel.scrollIntoView({behavior:"smooth", block:"nearest"});
+    }
+
+    function clearAnswers(){
+      state.questions.forEach(q => {
+        if(q.type === "mcq"){
+          document.querySelectorAll(`input[name="${q.id}"]`).forEach(x => x.checked = false);
+        } else {
+          const el = document.getElementById(q.id);
+          if(el) el.value = "";
+        }
+        const fb = document.getElementById(`fb-${q.id}`);
+        if(fb){ fb.className = "feedback"; fb.textContent = ""; }
+      });
+      document.querySelectorAll("textarea").forEach(t => t.value = "");
+      document.getElementById("scoreBox").textContent = "Score: 0 / 20";
+      document.getElementById("answerPanel").style.display = "none";
+    }
+
+    function startNewPaper(){
+      buildPaper();
+      startTimer();
+    }
+
+    document.getElementById("startBtn").addEventListener("click", startNewPaper);
+    document.getElementById("checkBtn").addEventListener("click", checkAnswers);
+    document.getElementById("showBtn").addEventListener("click", showAnswers);
+    document.getElementById("clearBtn").addEventListener("click", clearAnswers);
+
+    buildPaper();
+    resetTimer();
+  </script>
+</body>
+</html>
