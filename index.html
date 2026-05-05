@@ -309,7 +309,6 @@
       .statusrow{width:100%}
     }
   </style>
-  <script src="https://cdn.counter.dev/script.js" data-id="825e93b6-ce99-40ef-8bcc-125f13297433" data-utcoffset="8"></script>
 </head>
 <body>
   <div class="wrap">
@@ -329,7 +328,7 @@
       </div>
       <div class="statusrow">
         <div class="timerbox" id="timerBox">Time: <span id="timerText">50:00</span></div>
-        <div class="scorebox" id="scoreBox">Score: 0 / 20</div>
+        <div class="scorebox" id="scoreBox">Score: 0 / 24</div>
       </div>
     </div>
 
@@ -342,7 +341,7 @@
     <div class="grid" id="sectionB"></div>
 
     <div class="section">Section C</div>
-    <div class="section-note">Show your working clearly. Total: 8 marks.</div>
+    <div class="section-note">Show your working clearly. Total: 12 marks.</div>
     <div class="grid" id="sectionC"></div>
 
     <div class="answer-panel" id="answerPanel">
@@ -651,9 +650,48 @@
         });
       }
 
+
+      // Q12 packing equally into bags
+      {
+        const perBag = randInt(5, 12);
+        const bagsPacked = randInt(4, 11);
+        const moreBags = randInt(2, 9);
+        const totalCarrots = perBag * (bagsPacked + moreBags);
+        qs.push({
+          id:"q12", type:"input", label:"12.",
+          text:`Mr Ong wants to pack <strong>${totalCarrots}</strong> carrots equally into bags. Each bag can hold <strong>${perBag}</strong> carrots.<br>He has packed <strong>${bagsPacked}</strong> bags. How many more bags does he need to pack all the carrots?`,
+          correct:String(moreBags),
+          answerText:String(moreBags),
+          marks:2,
+          working:true,
+          wide:true
+        });
+      }
+
+      // Q13 cake promotion
+      {
+        const price = randInt(2, 5);
+        const buy = randInt(3, 5);
+        const free = randInt(1, 3);
+        const groups = randInt(2, 6);
+        const paid = buy * groups;
+        const totalSlices = (buy + free) * groups;
+        const paidAmount = paid * price;
+        qs.push({
+          id:"q13", type:"input", label:"13.",
+          text:`Timmy bought some slices of cake. For every <strong>${buy}</strong> slices of cake he bought, he would get <strong>${free}</strong> slice${free>1?'s':''} of cake free. Each cake cost <strong>$${price}</strong>. Timmy paid <strong>$${paidAmount}</strong> for the cakes.<br>How many slices of cake did Timmy get altogether?`,
+          correct:String(totalSlices),
+          answerText:String(totalSlices),
+          marks:2,
+          working:true,
+          wide:true
+        });
+      }
+
+
       state.questions = qs;
       renderPaper();
-      document.getElementById("scoreBox").textContent = "Score: 0 / 20";
+      document.getElementById("scoreBox").textContent = "Score: 0 / 24";
       document.getElementById("answerPanel").style.display = "none";
       document.getElementById("answerList").innerHTML = "";
     }
@@ -735,15 +773,15 @@
       });
 
       const scoreBox = document.getElementById("scoreBox");
-      scoreBox.textContent = `Score: ${score} / 20`;
+      scoreBox.textContent = `Score: ${score} / 24`;
 
-      if(score === 20){
+      if(score === 24){
         showCelebration();
-      } else if(score >= 18){
-        scoreBox.innerHTML = `Score: ${score} / 20<br><span style="color:#8a5a00;">Almost there! Try again and again. Check carefully and aim for full marks to unlock the cute surprise monster.</span>`;
+      } else if(score >= 22){
+        scoreBox.innerHTML = `Score: ${score} / 24<br><span style="color:#8a5a00;">Almost there! Try again and again. Check carefully and aim for full marks to unlock the cute surprise monster.</span>`;
         playSound("wrongSound");
       } else {
-        scoreBox.innerHTML = `Score: ${score} / 20<br><span style="color:#af2c2c;">Keep trying! You can try again and again until you improve.</span>`;
+        scoreBox.innerHTML = `Score: ${score} / 24<br><span style="color:#af2c2c;">Keep trying! You can try again and again until you improve.</span>`;
         playSound("wrongSound");
       }
     }
@@ -770,7 +808,7 @@
         if(fb){ fb.className = "feedback"; fb.textContent = ""; }
       });
       document.querySelectorAll("textarea").forEach(t => t.value = "");
-      document.getElementById("scoreBox").textContent = "Score: 0 / 20";
+      document.getElementById("scoreBox").textContent = "Score: 0 / 24";
       document.getElementById("answerPanel").style.display = "none";
     }
 
